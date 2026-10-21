@@ -494,7 +494,7 @@ body.typing .bnav{display:none}
 </style>
 </head>
 <body>
-<script>window.TT_BUILD="mvi464kb";</script>
+<script>window.TT_BUILD="mvi49h85";</script>
 <script src="vendor.js"></script>
 <script src="config.js"></script>
 
@@ -793,7 +793,7 @@ const DEFAULT_WEEK = {
 // Each person picks how many study days per week and minutes per day (Meu perfil / onboarding).
 const DAYS_GOAL = () => Math.min(7, Math.max(2, +PF.days || 5));
 const MINS_GOAL = () => [15,30,40].includes(+PF.mins) ? +PF.mins : 40;
-const dayLabel = i => `Dia ${i+1}`;
+const dayLabel = i => `Aula ${i+1}`;
 const DOW = new Proxy([], {get:(t,k)=>/^\d+$/.test(k)?dayLabel(+k):t[k]});
 const taskMin = T => Math.max(2, Math.round(T.min * MINS_GOAL() / 37));
 const TASKS = [
@@ -1164,7 +1164,7 @@ function renderTabs(){
 }
 function renderMission(){
   const d=week().days[sel], ti=todayIdx();
-  $("#dayEyebrow").hidden = true;
+  $("#dayEyebrow").hidden = false; $("#dayEyebrow").textContent = "Aula do dia";
   $("#dayTitle").textContent = d.theme;
   $("#dayGoal").textContent = d.themePt+". "+d.goal;
   $("#tasks").innerHTML = TASKS.map(t=>{ const r=D().done[doneKey(sel,t.id)];
@@ -1677,7 +1677,7 @@ function renderToday(){
   const el=$("#todayCard"); if(!el) return;
   const d=week().days[sel]||week().days[0], n=dayDoneCount(sel), secs=dayRec().secs||0, m=Math.floor(secs/60);
   const next=TASKS.find(t=>!isDone(sel,t.id));
-  el.innerHTML=`<span class="eyebrow">Hoje · Dia ${sel+1} de ${week().days.length}</span>
+  el.innerHTML=`<span class="eyebrow">Aula do dia · Aula ${sel+1} de ${week().days.length}</span>
     <h2>${esc(d.theme)}</h2><p class="muted">${esc(d.themePt||"")}</p>
     <div class="prog" role="progressbar" aria-label="Tarefas de hoje" aria-valuemin="0" aria-valuemax="4" aria-valuenow="${n}"><i style="width:${n/4*100}%"></i></div>
     <div class="row"><span class="muted">${n} de 4 tarefas · ${m} de ${MINS_GOAL()} min</span></div>
