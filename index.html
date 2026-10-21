@@ -491,7 +491,7 @@ body.typing .bnav{display:none}
 </style>
 </head>
 <body>
-<script>window.TT_BUILD="mvgtt1tx";</script>
+<script>window.TT_BUILD="mvi40wfa";</script>
 <script src="vendor.js"></script>
 <script src="config.js"></script>
 
@@ -1155,7 +1155,7 @@ function renderTabs(){
 }
 function renderMission(){
   const d=week().days[sel], ti=todayIdx();
-  $("#dayEyebrow").textContent = `Dia ${sel+1} de ${week().days.length} · meta: ${DAYS_GOAL()} dias por semana, ${MINS_GOAL()} min por dia`;
+  $("#dayEyebrow").hidden = true;
   $("#dayTitle").textContent = d.theme;
   $("#dayGoal").textContent = d.themePt+". "+d.goal;
   $("#tasks").innerHTML = TASKS.map(t=>{ const r=D().done[doneKey(sel,t.id)];
