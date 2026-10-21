@@ -493,10 +493,11 @@ body.typing .bnav{display:none}
 @media (min-width:900px){ .rail{overflow-y:auto} .nav-i{min-height:56px;padding:8px 4px} }
 .title-pt{margin:2px 0 0;color:var(--gold);font-size:.95rem;font-weight:500}
 h3 .title-pt{display:block;font-size:.875rem;font-family:var(--body)}
+.t-aula{display:block;font-family:var(--mono);font-size:.8125rem;letter-spacing:.08em;text-transform:uppercase;color:var(--neon-cyan,#00f0ff);margin-bottom:2px}
 </style>
 </head>
 <body>
-<script>window.TT_BUILD="mvi4b0iu";</script>
+<script>window.TT_BUILD="mvi4fl6i";</script>
 <script src="vendor.js"></script>
 <script src="config.js"></script>
 
@@ -1172,7 +1173,7 @@ function renderMission(){
   $("#dayTitlePt").textContent = d.themePt||"";
   $("#dayGoal").textContent = d.goal||"";
   $("#tasks").innerHTML = TASKS.map(t=>{ const r=D().done[doneKey(sel,t.id)];
-    return `<button class="task ${r?"done":""} ${active===t.id?"active":""}" data-t="${t.id}"><span class="ic">${r?"✓":t.n}</span><span><span class="nm">${t.name}</span>${FOCUS_TASK[PF.focus]===t.id?'<span class="focus-chip">Seu foco</span>':""}<br><span class="sub">${t.sub} · ${taskMin(t)} min</span></span><span class="rt">${r?`${r.score!=null?`nota ${r.score}<br>`:""}<b>+${r.xp} pontos</b>`:"Começar"}</span></button>`; }).join("");
+    return `<button class="task ${r?"done":""} ${active===t.id?"active":""}" data-t="${t.id}"><span class="ic">${r?"✓":+t.n}</span><span><span class="t-aula">Aula ${+t.n}</span><span class="nm">${t.name}</span>${FOCUS_TASK[PF.focus]===t.id?'<span class="focus-chip">Seu foco</span>':""}<br><span class="sub">${t.sub} · ${taskMin(t)} min</span></span><span class="rt">${r?`${r.score!=null?`nota ${r.score}<br>`:""}<b>+${r.xp} pontos</b>`:"Começar"}</span></button>`; }).join("");
   $("#tasks").querySelectorAll(".task").forEach(b=>b.onclick=()=>openTask(b.dataset.t));
   const secs=dayRec().secs||0, m=Math.floor(secs/60); $("#ringMin").textContent=m; $("#ringGoal").textContent=MINS_GOAL(); $("#ringArc").style.strokeDashoffset = 276.5*(1-Math.min(1,secs/(MINS_GOAL()*60)));
 }
@@ -1208,7 +1209,7 @@ function renderWorkHome(){
 }
 function phraseHTML(d){ const P=d.phrases; return [...P.open.map((p,i)=>["Abrir",p,(P.openPt||[])[i]]),...P.close.map((p,i)=>["Fechar",p,(P.closePt||[])[i]])].map(([k,p,pt])=>`<div class="phrase"><span><em>${k}</em>${esc(p)}${pt?`<small class="ph-pt">${esc(pt)}</small>`:""}</span><button class="icon-btn" data-say="${esc(p)}" aria-label="Ouvir">${ICON.play}</button></div>`).join(""); }
 function bindSpeak(root){ root.querySelectorAll("[data-say]").forEach(b=>b.onclick=()=>speak(b.dataset.say)); }
-function head(t, extra=""){ const T=TASKS.find(x=>x.id===t); return `<div class="work-head"><div class="txt"><span class="eyebrow">Tarefa ${T.n} · ${taskMin(T)} min · ${dayLabel(sel)}</span><h2>${T.name}</h2>${extra}</div><button class="btn ghost" id="closeTask">Voltar às tarefas</button></div>`; }
+function head(t, extra=""){ const T=TASKS.find(x=>x.id===t); return `<div class="work-head"><div class="txt"><span class="eyebrow">Aula ${+T.n}, ${taskMin(T)} minutos</span><h2>${T.name}</h2>${extra}</div><button class="btn ghost" id="closeTask">Voltar às tarefas</button></div>`; }
 function openTask(t){
   if(VIEW!=="lessons") showView("lessons",{focus:false});
   active=t; renderMission();
@@ -1392,7 +1393,7 @@ function startCall(mode){
     theme: free ? "daily work check-in" : d.theme, vocab: d.vocab.map(v=>v.t),
     opener: free ? (PERSONA_OPENERS[PF.lang]||PERSONA_OPENERS.en)[PF.persona] : d.boss.opener,
     msgs:[], startedAt:Date.now(), dayKey: free?null:doneKey(sel,"dialogue")});
-  $("#callEyebrow").textContent = free ? "Conversa livre · por voz" : `Tarefa 04 · ${dayLabel(sel)} · ${d.theme}`;
+  $("#callEyebrow").textContent = free ? "Conversa livre · por voz" : `Aula 4, ${taskMin(TASKS[3])} minutos · ${d.theme}`;
   $("#callScene").textContent = Call.scenario;
   const cph=pset().photo; $("#capWho").innerHTML = `${cph?`<img class="pw-ph" src="${cph}" alt="">`:""}${esc(personaLabel())}`; $("#finishPhrase").textContent = `"${L().finish}"`;
   $("#callResult").innerHTML=""; $("#caps").hidden=false; $("#callActions").hidden=false; $("#callHint").hidden=false;
