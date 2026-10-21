@@ -11,11 +11,12 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<style>html,body{background:#060c16;color:#dce8f6}[hidden]{display:none!important}body{margin:0}img{max-width:100%}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 <title>TalKTome</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"></noscript>
 <style>
 /* Layout: HUD cockpit. Orb + today's mission on top, stats strip, task workspace, attendance log. Single deliberate dark look. */
 :root{
@@ -497,9 +498,10 @@ h3 .title-pt{display:block;font-size:.875rem;font-family:var(--body)}
 </style>
 </head>
 <body>
-<script>window.TT_BUILD="mvi4n0zi";</script>
-<script src="vendor.js"></script>
-<script src="config.js"></script>
+<script>window.TT_BUILD="mvieju7l";
+// If anything fails while starting, show a message instead of a blank page.
+window.addEventListener("error",function(e){ if(window.__ttStarted) return; var g=document.getElementById("gateBody"); if(g) g.innerHTML='<div class="panel gate-card"><h2>Não foi possível abrir o TalKTome</h2><p>Atualize o navegador ou abra o link no Google Chrome. Se continuar, feche e abra de novo.</p><p class="hint">'+String(e.message||"").slice(0,140)+'</p></div>'; });
+</script>
 
 
 <a class="skip" href="#main">Pular para o conteúdo</a>
@@ -1768,7 +1770,8 @@ async function startApp(){
   const h=location.hash.slice(1); showView(VIEWS.includes(h)?h:"home",{fromHash:true,focus:false});
 }
 </script>
-
+<script src="vendor.js"></script>
+<script src="config.js"></script>
 <style>
 /* Gate: full-screen layer for login, API key, onboarding and settings. */
 .gate{position:fixed;inset:0;z-index:60;overflow-y:auto;background:radial-gradient(900px 600px at 50% 0%,rgba(47,140,255,.16),transparent 60%),var(--bg);
@@ -1847,7 +1850,7 @@ label.btn.disabled{opacity:.45;pointer-events:none}
 <div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="TalKTome">
   <div class="gate-in">
     <div class="gate-brand"><img src="icon-192.png" alt=""><div><b>TalKTome</b><small>Idiomas para o trabalho · conversação profissional</small></div></div>
-    <div id="gateBody"></div>
+    <div id="gateBody"><div class="panel gate-card"><span class="loading">Carregando o TalKTome…</span></div></div>
   </div>
 </div>
 
@@ -2407,6 +2410,7 @@ function enterApp(){
 $("#openSettings").onclick=viewSettings;
 wireMaterials();
 (async()=>{
+  window.__ttStarted=true;
   if(!sb) return viewConfig();
   const recovering=/type=recovery/.test(location.hash);
   sb.auth.onAuthStateChange(ev=>{ if(ev==="PASSWORD_RECOVERY") viewAuth("reset"); });
