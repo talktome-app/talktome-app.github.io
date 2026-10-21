@@ -488,10 +488,13 @@ body.typing .bnav{display:none}
 .vguide summary{cursor:pointer;font-weight:500;min-height:32px;display:flex;align-items:center;gap:8px}
 .vguide p{margin:8px 0 2px;font-size:.9375rem;line-height:1.6;color:#c3d1e4}
 .vguide .here{font-family:var(--mono);font-size:.8125rem;color:var(--neon-ink,#04121f);background:var(--neon-cyan,#00f0ff);border-radius:999px;padding:1px 8px}
+.gen-cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.gen-cta p{margin:0;font-weight:500}
+@media (min-width:900px){ .rail{overflow-y:auto} .nav-i{min-height:56px;padding:8px 4px} }
 </style>
 </head>
 <body>
-<script>window.TT_BUILD="mvi40wfa";</script>
+<script>window.TT_BUILD="mvi464kb";</script>
 <script src="vendor.js"></script>
 <script src="config.js"></script>
 
@@ -505,6 +508,7 @@ body.typing .bnav{display:none}
   <button class="nav-i" data-view="materials"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h6l2 2h10v10H3V7Z"/></svg><span>Materiais</span></button>
   <button class="nav-i" data-view="glossary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4Z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg><span>Glossário</span></button>
   <button class="nav-i" data-view="progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span>Progresso</span></button>
+  <button class="nav-i" data-view="generate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"/></svg><span>Novos estudos</span></button>
   <span class="rail-gap"></span>
   <button class="nav-i" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg><span>Ajustes</span></button>
   <button class="nav-i" data-act="share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/></svg><span>Convidar</span></button>
@@ -563,10 +567,15 @@ body.typing .bnav{display:none}
       <div class="tasks" id="tasks"></div>
     </div>
     <section class="panel work" id="work" aria-live="polite"></section>
+    <div class="panel hist gen-cta"><p>Não gostou e quer mudar o conteúdo?</p><button class="btn gold" data-view="generate">Gerar novos estudos</button></div>
+  </section>
+
+  <section class="view" id="v-generate" aria-labelledby="h-generate" hidden>
+    <div class="view-head"><h1 id="h-generate">Gerar novos estudos</h1></div>
     <div class="panel hist">
-      <h2>Gerar uma nova semana</h2>
+      <h2>Não gostou e quer mudar o conteúdo? Gere novos estudos</h2>
       <p class="hint">A TalKTome monta uma semana nova com base no seu currículo, nos seus materiais e no foco que você escolher. Substitui o plano da semana atual.</p>
-      <div class="gen"><label class="sr-only" for="genFocus">Foco da nova semana</label><input type="text" id="genFocus" placeholder="Foco opcional: negociar prazos com cliente"><button class="btn gold" id="genBtn">Gerar semana</button></div>
+      <div class="gen"><label class="sr-only" for="genFocus">Foco dos novos estudos</label><input type="text" id="genFocus" placeholder="Foco opcional: negociar prazos com cliente"><button class="btn gold" id="genBtn">Gerar novos estudos</button></div>
       <div id="genStatus" aria-live="polite"></div>
     </div>
   </section>
@@ -590,7 +599,7 @@ body.typing .bnav{display:none}
         <div class="row"><button class="btn primary" id="matTextSave">Salvar texto</button><button class="btn ghost" id="matTextCancel">Cancelar</button></div>
       </div>
       <div id="matStatus" aria-live="polite"></div>
-      <button class="btn gold" id="matGen">Gerar semana com meus materiais</button>
+      <button class="btn gold" id="matGen">Gerar novos estudos com meus materiais</button>
     </div>
     <div class="mats" id="mats"></div>
   </section>
@@ -663,7 +672,7 @@ body.typing .bnav{display:none}
       <button class="app" data-view="glossary"><span class="app-ic t-vio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4Z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg></span>Glossário</button>
       <button class="app" data-view="progress"><span class="app-ic t-grn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>Progresso</button>
       <button class="app" data-view="progress" data-anchor="badgesPanel"><span class="app-ic t-gol"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/><path d="M8 6H4a3 3 0 0 0 4 4M16 6h4a3 3 0 0 1-4 4M12 13v4M8 21h8M10 17h4"/></svg></span>Conquistas</button>
-      <button class="app" data-view="lessons" data-anchor="genFocus"><span class="app-ic t-pnk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"/></svg></span>Nova semana</button>
+      <button class="app" data-view="generate"><span class="app-ic t-pnk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"/></svg></span>Novos estudos</button>
       <button class="app" data-view="settings"><span class="app-ic t-cya"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg></span>Ajustes</button>
       <button class="app" data-act="share"><span class="app-ic t-pnk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/></svg></span>Convidar amigos</button>
       <button class="app" data-act="profile"><span class="app-ic t-gry"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>Perfil</button>
@@ -1629,7 +1638,7 @@ setInterval(()=>{ if(active && document.visibilityState==="visible"){ const r=da
   if(r.secs%60===0){ renderMission(); Store.save(); if(r.secs===MINS_GOAL()*60) toast(`${MINS_GOAL()} minutos: meta de hoje atingida. Pode encerrar.`); } } },1000);
 
 /* ---------------- Navigation (screens) ---------------- */
-const VIEWS=["home","lessons","convos","materials","glossary","progress","settings"];
+const VIEWS=["home","lessons","convos","materials","glossary","progress","settings","generate"];
 let VIEW="home";
 function showView(v, opts={}){
   if(!VIEWS.includes(v)) v="home";
@@ -2113,7 +2122,7 @@ function wireMaterials(){
   };
   const addTopic=async()=>{ const t=$("#matTopic").value.trim(); if(t.length<3) return; try{ await addTopicMaterial(t); $("#matTopic").value=""; renderMats(); toast("Assunto adicionado."); }catch(err){ toast(err.message); } };
   $("#matTopicAdd").onclick=addTopic; $("#matTopic").onkeydown=e=>{ if(e.key==="Enter") addTopic(); };
-  $("#matGen").onclick=()=>{ showView("lessons",{anchor:"genStatus"}); generateWeek($("#genFocus").value.trim()); };
+  $("#matGen").onclick=()=>{ showView("generate",{anchor:"genStatus"}); generateWeek($("#genFocus").value.trim()); };
 }
 
 /* ---------- Onboarding: TalKTome asks, one step at a time ---------- */
@@ -2289,7 +2298,7 @@ function renderSettingsView(){
     savePrefs({focus:$("#sFocus").value, accent:$("#sAccent").value, days:+$("#sDays").value, mins:+$("#sMins").value});
     await saveProfile({lang:$("#sLang").value, level:$("#sLevel").value});
     voice=null; applyProfileLabels(); renderAll(); toast("Estudos salvos.");
-    if(changed){ showView("lessons",{anchor:"genStatus"}); generateWeek(""); } else renderSettingsView();
+    if(changed){ showView("generate",{anchor:"genStatus"}); generateWeek(""); } else renderSettingsView();
   };
   renderVoiceSelect();
 }
