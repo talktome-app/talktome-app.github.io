@@ -497,7 +497,7 @@ h3 .title-pt{display:block;font-size:.875rem;font-family:var(--body)}
 </style>
 </head>
 <body>
-<script>window.TT_BUILD="mvi4k7ps";</script>
+<script>window.TT_BUILD="mvi4n0zi";</script>
 <script src="vendor.js"></script>
 <script src="config.js"></script>
 
@@ -1173,7 +1173,7 @@ function renderMission(){
   $("#dayTitlePt").textContent = d.themePt||"";
   $("#dayGoal").textContent = d.goal||"";
   $("#tasks").innerHTML = TASKS.map(t=>{ const r=D().done[doneKey(sel,t.id)];
-    return `<button class="task ${r?"done":""} ${active===t.id?"active":""}" data-t="${t.id}"><span class="ic">${r?"✓":t.n}</span><span><span class="nm">${t.name}</span>${FOCUS_TASK[PF.focus]===t.id?'<span class="focus-chip">Seu foco</span>':""}<br><span class="sub">${t.sub} · ${taskMin(t)} min</span></span><span class="rt">${r?`${r.score!=null?`nota ${r.score}<br>`:""}<b>+${r.xp} pontos</b>`:"Começar"}</span></button>`; }).join("");
+    return `<button class="task ${r?"done":""} ${active===t.id?"active":""}" data-t="${t.id}"><span class="ic">${r?"✓":t.n}</span><span><span class="t-aula">Tarefa ${+t.n}</span><span class="nm">${t.name}</span>${FOCUS_TASK[PF.focus]===t.id?'<span class="focus-chip">Seu foco</span>':""}<br><span class="sub">${t.sub} · ${taskMin(t)} min</span></span><span class="rt">${r?`${r.score!=null?`nota ${r.score}<br>`:""}<b>+${r.xp} pontos</b>`:"Começar"}</span></button>`; }).join("");
   $("#tasks").querySelectorAll(".task").forEach(b=>b.onclick=()=>openTask(b.dataset.t));
   const secs=dayRec().secs||0, m=Math.floor(secs/60); $("#ringMin").textContent=m; $("#ringGoal").textContent=MINS_GOAL(); $("#ringArc").style.strokeDashoffset = 276.5*(1-Math.min(1,secs/(MINS_GOAL()*60)));
 }
