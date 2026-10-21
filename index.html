@@ -491,10 +491,12 @@ body.typing .bnav{display:none}
 .gen-cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
 .gen-cta p{margin:0;font-weight:500}
 @media (min-width:900px){ .rail{overflow-y:auto} .nav-i{min-height:56px;padding:8px 4px} }
+.title-pt{margin:2px 0 0;color:var(--gold);font-size:.95rem;font-weight:500}
+h3 .title-pt{display:block;font-size:.875rem;font-family:var(--body)}
 </style>
 </head>
 <body>
-<script>window.TT_BUILD="mvi49h85";</script>
+<script>window.TT_BUILD="mvi4b0iu";</script>
 <script src="vendor.js"></script>
 <script src="config.js"></script>
 
@@ -557,6 +559,7 @@ body.typing .bnav{display:none}
         <div class="txt">
           <span class="eyebrow" id="dayEyebrow">Missão do dia</span>
           <h2 id="dayTitle">—</h2>
+          <p class="title-pt" id="dayTitlePt"></p>
           <p class="muted" id="dayGoal"></p>
         </div>
         <div class="ring" role="img" aria-labelledby="ringTxt">
@@ -1166,7 +1169,8 @@ function renderMission(){
   const d=week().days[sel], ti=todayIdx();
   $("#dayEyebrow").hidden = false; $("#dayEyebrow").textContent = "Aula do dia";
   $("#dayTitle").textContent = d.theme;
-  $("#dayGoal").textContent = d.themePt+". "+d.goal;
+  $("#dayTitlePt").textContent = d.themePt||"";
+  $("#dayGoal").textContent = d.goal||"";
   $("#tasks").innerHTML = TASKS.map(t=>{ const r=D().done[doneKey(sel,t.id)];
     return `<button class="task ${r?"done":""} ${active===t.id?"active":""}" data-t="${t.id}"><span class="ic">${r?"✓":t.n}</span><span><span class="nm">${t.name}</span>${FOCUS_TASK[PF.focus]===t.id?'<span class="focus-chip">Seu foco</span>':""}<br><span class="sub">${t.sub} · ${taskMin(t)} min</span></span><span class="rt">${r?`${r.score!=null?`nota ${r.score}<br>`:""}<b>+${r.xp} pontos</b>`:"Começar"}</span></button>`; }).join("");
   $("#tasks").querySelectorAll(".task").forEach(b=>b.onclick=()=>openTask(b.dataset.t));
@@ -1236,7 +1240,7 @@ function taskVocab(){
 function taskReading(){
   const d=week().days[sel], prev=D().done[doneKey(sel,"reading")];
   $("#work").innerHTML = head("reading",`<p class="muted">1) Ouça o modelo. 2) Grave sua leitura. 3) A TalKTome compara o que foi captado com o texto e aponta a pronúncia.</p>`)+
-  `<div class="box"><div class="row" style="justify-content:space-between"><h3>${esc(d.theme)}</h3><div class="row"><button class="btn" id="model">${ICON.play}Ouvir modelo</button><button class="btn ghost" id="slow">Mais devagar</button></div></div>
+  `<div class="box"><div class="row" style="justify-content:space-between"><h3>${esc(d.theme)}${d.themePt?`<small class="title-pt">${esc(d.themePt)}</small>`:""}</h3><div class="row"><button class="btn" id="model">${ICON.play}Ouvir modelo</button><button class="btn ghost" id="slow">Mais devagar</button></div></div>
     <div class="reading-text" id="rtext">${readingHTML(d, Array.isArray(d.readingPt)?d.readingPt:null)}</div><p class="hint">Um clique numa palavra: ouvir a pronúncia. Dois cliques: ver o significado e quando usar.</p></div>
    <div class="box"><div class="row" style="justify-content:space-between"><h3>Sua leitura</h3><div class="row"><span class="hint" id="recState" aria-live="polite"></span><button class="btn rec-btn" id="recBtn">${ICON.mic}Gravar</button><button class="btn ghost" id="recRestart">Recomeçar</button></div></div>
     <textarea id="heard" placeholder="O que o microfone captar aparece aqui. Se o botão Gravar não funcionar, clique aqui e use o ditado do Windows (Win + H) enquanto lê em voz alta."></textarea>
