@@ -188,6 +188,16 @@ textarea{min-height:120px;line-height:1.6}
 .list{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
 .list li{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#071120}
 .list li .body{flex:1;min-width:0}
+.wp-btns{display:flex;gap:8px;flex:none}
+.wp-mic.rec{background:rgba(255,92,122,.18);border-color:#ff5c7a;color:#ff8aa0;animation:wpPulse 1s ease-in-out infinite}
+@keyframes wpPulse{50%{box-shadow:0 0 0 6px rgba(255,92,122,.15)}}
+@media (prefers-reduced-motion:reduce){.wp-mic.rec{animation:none}}
+.wp-out:empty{display:none}
+.wp-out{margin-top:8px;padding:8px 10px;border-radius:6px;font-size:.875rem;border:1px solid var(--line-2)}
+.wp-out.ok{border-color:#3ddc97;color:#7ff0bd;background:rgba(61,220,151,.08)}
+.wp-out.almost{border-color:#ffb547;color:#ffd08a;background:rgba(255,181,71,.08)}
+.wp-out.no{border-color:#ff5c7a;color:#ffa3b3;background:rgba(255,92,122,.08)}
+.wp-out.wait{color:var(--muted)}
 .list .w1{font-weight:600;color:var(--gold)}
 .ipa{font-family:var(--mono);font-size:.82rem;color:var(--arc)}
 .strike{text-decoration:line-through;color:var(--bad);text-decoration-color:rgba(255,112,112,.6)}
@@ -498,7 +508,7 @@ h3 .title-pt{display:block;font-size:.875rem;font-family:var(--body)}
 </style>
 </head>
 <body>
-<script>window.TT_BUILD="mvieju7l";
+<script>window.TT_BUILD="mwcv630q";
 // If anything fails while starting, show a message instead of a blank page.
 window.addEventListener("error",function(e){ if(window.__ttStarted) return; var g=document.getElementById("gateBody"); if(g) g.innerHTML='<div class="panel gate-card"><h2>Não foi possível abrir o TalKTome</h2><p>Atualize o navegador ou abra o link no Google Chrome. Se continuar, feche e abra de novo.</p><p class="hint">'+String(e.message||"").slice(0,140)+'</p></div>'; });
 </script>
@@ -1303,11 +1313,49 @@ async function writingReference(d){
   }catch(e){ return null; }
 }
 const clamp = n => Math.max(0,Math.min(100,Math.round(+n||0)));
+/* Word practice: listen, say one word, the AI judges it. */
+const normW = s => String(s||"").toLowerCase().replace(/[^\p{L}\p{N}\s]/gu," ").replace(/\s+/g," ").trim();
+let wpRec=null;
+document.addEventListener("click", e=>{
+  const b=e.target.closest("[data-practice]"); if(!b) return;
+  if(wpRec){ wpRec.stop(); return; }
+  practiceWord(b);
+});
+function practiceWord(btn){
+  const word=btn.dataset.practice, ipa=btn.dataset.ipa||"", out=btn.closest("li").querySelector(".wp-out");
+  const show=(cls,html)=>{ out.className="wp-out "+cls; out.innerHTML=html; };
+  if(!SR){ show("no","Este navegador não reconhece fala. Abra o TalKTome no Google Chrome para treinar a pronúncia."); return; }
+  if("speechSynthesis" in window) speechSynthesis.cancel();
+  let heard=[], ended=false;
+  const r=new SR(); r.lang=L().sr; r.continuous=false; r.interimResults=false; r.maxAlternatives=5; wpRec=r;
+  r.onresult=e=>{ const res=e.results[0]; heard=[...res].map(a=>a.transcript.trim()).filter(Boolean); };
+  r.onerror=e=>{ if(e.error==="not-allowed"||e.error==="service-not-allowed"||e.error==="audio-capture") show("no","Não consegui usar o microfone. Libere o microfone para este site e tente de novo."); };
+  r.onend=()=>{ if(ended) return; ended=true; wpRec=null; btn.classList.remove("rec"); btn.innerHTML=ICON.mic; Orb.set("idle"); status("TalKTome online");
+    if(out.classList.contains("no")&&!heard.length) return;
+    if(!heard.length){ show("wait","Não ouvi nada. Toque no microfone e fale a palavra logo em seguida."); return; }
+    judgeWord(word, ipa, heard, show); };
+  try{ r.start(); }catch(e){ wpRec=null; show("no","Não consegui abrir o microfone agora. Tente de novo."); return; }
+  btn.classList.add("rec"); btn.innerHTML=ICON.stop; show("wait",`Ouvindo… diga <b>${esc(word)}</b>`); Orb.set("listening"); status("Ouvindo você");
+}
+async function judgeWord(word, ipa, heard, show){
+  const target=normW(word), match=heard.some(h=>normW(h)===target || ` ${normW(h)} `.includes(` ${target} `));
+  show("wait",`Captei “${esc(heard[0])}”. Avaliando…`);
+  const s=await getSample();
+  let v=null;
+  if(s){ try{ v=await s.json(`You are a precise ${L().name} pronunciation coach for ${learner()}. The student tried to say the target word or phrase once, alone. A speech recognizer returned its best guesses, most likely first. If the recognizer matched the target, the pronunciation was intelligible. If it heard something else, compare the sounds to find what went wrong, considering typical Brazilian Portuguese pitfalls.
+Target: "${word}"${ipa?` ${ipa}`:""}
+Recognizer guesses: ${JSON.stringify(heard)}
+Return ONLY JSON: {"verdict":"ok"|"almost"|"no","feedback_pt":"one or two short sentences in Brazilian Portuguese: praise if ok, otherwise the exact sound to fix with a simple Portuguese-style respelling"}`,{modelTier:"quick"}); }catch(e){ v=null; } }
+  if(!v||!["ok","almost","no"].includes(v.verdict)) v={verdict:match?"ok":"no", feedback_pt:match?"Reconhecido corretamente.":"Não reconheci a palavra. Ouça de novo e tente outra vez, mais devagar."};
+  const head={ok:"Certo!", almost:"Quase lá.", no:"Ainda não."}[v.verdict];
+  show(v.verdict,`<b>${head}</b> ${esc(v.feedback_pt||"")} <span class="muted">· captado como “${esc(heard[0])}”</span>`);
+  if(v.verdict==="ok"){ const k="wp:"+target; const P=(D().wordPractice ||= {}); if(!P[k]){ P[k]=dkey(today()); D().xp+=2; Store.save(); renderTop(); toast("+2 pontos pela pronúncia certa"); } }
+}
 function readingResult(fb,g){
   return `<div class="result"><div class="score"><span class="big">${clamp(fb.score)}<small>/100</small></span>${g!=null?`<span class="xpgain">+${g} pontos</span>`:`<span class="muted">Última avaliação</span>`}<span class="muted">Precisão de reconhecimento: ${clamp(fb.accuracy)}%</span></div>
    <p>${esc(fb.summary_pt)}</p>
    ${(fb.strengths_pt||[]).length?`<p class="better">Pontos fortes: ${(fb.strengths_pt).map(esc).join(" · ")}</p>`:""}
-   <h3>Palavras para treinar</h3><ul class="list">${(fb.words||[]).map(w=>`<li><div class="body"><span class="w1">${esc(w.word)}</span> <span class="ipa">${esc(w.ipa||"")}</span>${w.heard?` <span class="muted">· captado como “${esc(w.heard)}”</span>`:""}<br><span>${esc(w.tip_pt)}</span></div><button class="icon-btn" data-say="${esc(w.word)}" aria-label="Ouvir">${ICON.play}</button></li>`).join("")}</ul>
+   <h3>Palavras para treinar</h3>${(fb.words||[]).length?`<p class="hint">Toque em ouvir, repita e depois toque no microfone e fale a palavra. A TalKTome avalia na hora.</p>`:""}<ul class="list">${(fb.words||[]).map(w=>`<li><div class="body"><span class="w1">${esc(w.word)}</span> <span class="ipa">${esc(w.ipa||"")}</span>${w.heard?` <span class="muted">· captado como “${esc(w.heard)}”</span>`:""}<br><span>${esc(w.tip_pt)}</span><div class="wp-out" aria-live="polite"></div></div><div class="wp-btns"><button class="icon-btn" data-say="${esc(w.word)}" aria-label="Ouvir ${esc(w.word)}">${ICON.play}</button><button class="icon-btn wp-mic" data-practice="${esc(w.word)}" data-ipa="${esc(w.ipa||"")}" aria-label="Falar ${esc(w.word)} e ser avaliado">${ICON.mic}</button></div></li>`).join("")}</ul>
    <p><b>Foco para amanhã:</b> ${esc(fb.next_focus_pt)}</p>
    ${g!=null?`<div class="row"><button class="btn primary" onclick="openTask('writing')">Ir para a escrita</button></div>`:""}</div>`;
 }
